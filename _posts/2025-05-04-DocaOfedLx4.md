@@ -6,24 +6,23 @@ author: Akira Kanai
 categories: HostNetwork
 tags:	connectx
 cover:  "/assets/instacode.png"
+description: 自宅のCX-4 Lx環境にDOCA-OFEDを入れました
 ---
 
 
 - 前提: 
 [NVIDIA MLNX_OFED Documentation v24.04-0.7.0.0](https://docs.nvidia.com/networking/display/mlnxofedv24040700/introduction)
 
-```
-MLNX_OFED has transitioned into DOCA-Host, and now available as DOCA-OFED (learn about DOCA-Host profiles here).
-
-MLNX_OFED last standalone release is October 2024 Long Term Support (3 years). Starting January 2025 all new features will be included in DOCA-OFED only.
-```
+>MLNX_OFED has transitioned into DOCA-Host, and now available as DOCA-OFED (learn about DOCA-Host profiles here).
+>
+>MLNX_OFED last standalone release is October 2024 Long Term Support (3 years). Starting January 2025 all new features will be included in DOCA-OFED only.
 
 なのでDOCA-OFEDにできるならしたい。
 
 
 - 事前確認: 
- 
-```
+
+{% highlight shell %}
   Device Type:      ConnectX4LX
   Part Number:      MCX4121A-XCA_Ax
   Description:      ConnectX-4 Lx EN network interface card; 10GbE dual-port SFP28; PCIe3.0 x8; ROHS R6
@@ -34,7 +33,7 @@ MLNX_OFED last standalone release is October 2024 Long Term Support (3 years). S
      FW             14.32.1010     N/A
      PXE            3.6.0502       N/A
      UEFI           14.25.0017     N/A
-```
+{% endhighlight %}
 
 # DOCA
 [Manual](https://docs.nvidia.com/doca/sdk/nvidia+doca+installation+guide+for+linux/index.html)はこれ。
@@ -62,7 +61,7 @@ sudo apt-get update
 sudo apt-get -y install doca-all
 ```
 
-```
+```console
 ...
 knem.ko:
  - Uninstallation
@@ -91,7 +90,7 @@ Building initial module for 5.15.0-97-generic
 
 でmakeされたので反映していく。
 
-```
+```shell
 sudo /etc/init.d/openibd restart
 sudo mst restart
 sudo mst start
@@ -101,8 +100,7 @@ sudo /etc/init.d/openibd restart
 
 こででいいはずだが...
 
-```
-
+```console
 ubuntu@optiplex:~$
 sudo /etc/init.d/openibd restart
 Unloading mlx_compat                                       [FAILED]
@@ -124,7 +122,7 @@ Device:             /dev/mst/mt4117_pciconf0
 あまりmlx resetしても意味がなさそうなので
 
 ```shell
-# sudo shutdown -r now
+$ sudo shutdown -r now
 ```
 
 したら上手くいった。原因不明。
