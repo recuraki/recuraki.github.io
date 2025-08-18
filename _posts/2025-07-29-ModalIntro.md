@@ -1,10 +1,9 @@
 ---
 layout: post
-title:  "Modal入門"
+title:  "Modal Introduction/Images"
 date:   2025-07-29T00:00:00+09:00
 author: Akira Kanai
-categories: HostNetwork
-tags: HostNetwork
+categories: Modal
 cover:  "/assets/instacode.png"
 ---
 
@@ -64,4 +63,4 @@ micromamba_installは割愛。
 
 尚、`force_build=True`によりイメージのbuildを強制できます。
 
-Modalが提供するベースイメージはあまり更新されません。なぜなら全部の顧客に影響が及ぶからです。このため、基本的にはワークスペースごとにあるベースイメージのバージョンは決まっていて、自分のタイミングでこれを更新することもできます。
+Modalが提供するベースイメージはあまり更新されない。なぜなら全部の顧客に影響が及ぶから。このため、基本的にはワークスペースごとにあるベースイメージのバージョンは決まっていて、自分のタイミングでこれを更新するというスタイルになっている。
