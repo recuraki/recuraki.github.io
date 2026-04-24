@@ -30,8 +30,89 @@ layout: default
 </section>
 
 <article class="post-content">
+  {% unless page.toc == false %}
+  <details class="toc" open>
+    <summary>目次</summary>
+    <nav id="toc-nav"></nav>
+  </details>
+  {% endunless %}
   {{ content }}
 </article>
+
+<style>
+  .toc {
+    background: #f8f9fa;
+    border: 1px solid #e1e4e8;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+  }
+  .toc summary {
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 8px;
+  }
+  #toc-nav ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+  #toc-nav ul ul {
+    padding-left: 1.2em;
+  }
+  #toc-nav li {
+    margin: 4px 0;
+  }
+  #toc-nav a {
+    text-decoration: none;
+    color: #0366d6;
+  }
+  #toc-nav a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<script>
+(function() {
+  var article = document.querySelector('.post-content');
+  var headings = article.querySelectorAll('h2, h3, h4');
+  if (headings.length < 2) {
+    var toc = document.querySelector('.toc');
+    if (toc) toc.style.display = 'none';
+    return;
+  }
+  var nav = document.getElementById('toc-nav');
+  var ul = document.createElement('ul');
+  var stack = [{ level: 1, list: ul }];
+  headings.forEach(function(h) {
+    var level = parseInt(h.tagName.charAt(1));
+    if (!h.id) {
+      h.id = h.textContent.trim().toLowerCase().replace(/[^\w\u3000-\u9fff]+/g, '-').replace(/^-|-$/g, '');
+    }
+    while (stack.length > 1 && stack[stack.length - 1].level >= level) {
+      stack.pop();
+    }
+    if (level > stack[stack.length - 1].level) {
+      var sub = document.createElement('ul');
+      var parent = stack[stack.length - 1].list;
+      var lastLi = parent.lastElementChild;
+      if (!lastLi) {
+        lastLi = document.createElement('li');
+        parent.appendChild(lastLi);
+      }
+      lastLi.appendChild(sub);
+      stack.push({ level: level, list: sub });
+    }
+    var li = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = '#' + h.id;
+    a.textContent = h.textContent;
+    li.appendChild(a);
+    stack[stack.length - 1].list.appendChild(li);
+  });
+  nav.appendChild(ul);
+})();
+</script>
 
 {% if site.jekyll-archives %}
 {% if page.tags.size > 0 %}
