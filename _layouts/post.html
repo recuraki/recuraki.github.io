@@ -30,27 +30,42 @@ layout: default
 </section>
 
 <article class="post-content">
-  {% unless page.toc == false %}
-  <details class="toc" open>
-    <summary>目次</summary>
-    <nav id="toc-nav"></nav>
-  </details>
-  {% endunless %}
   {{ content }}
 </article>
 
+{% unless page.toc == false %}
+<aside class="toc-sidebar" id="toc-sidebar">
+  <div class="toc-sidebar-inner">
+    <strong class="toc-title">目次</strong>
+    <nav id="toc-nav"></nav>
+  </div>
+</aside>
+{% endunless %}
+
 <style>
-  .toc {
+  .toc-sidebar {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 220px;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    z-index: 100;
+    padding: 12px 14px;
+    font-size: 0.82em;
+    line-height: 1.5;
+    transition: transform 0.3s ease;
+  }
+  .toc-sidebar-inner {
     background: #f8f9fa;
     border: 1px solid #e1e4e8;
     border-radius: 6px;
-    padding: 12px 16px;
-    margin-bottom: 24px;
+    padding: 12px 14px;
   }
-  .toc summary {
-    font-weight: bold;
-    cursor: pointer;
+  .toc-title {
+    display: block;
     margin-bottom: 8px;
+    font-size: 1.05em;
   }
   #toc-nav ul {
     list-style: none;
@@ -58,10 +73,10 @@ layout: default
     margin: 0;
   }
   #toc-nav ul ul {
-    padding-left: 1.2em;
+    padding-left: 1em;
   }
   #toc-nav li {
-    margin: 4px 0;
+    margin: 3px 0;
   }
   #toc-nav a {
     text-decoration: none;
@@ -70,15 +85,25 @@ layout: default
   #toc-nav a:hover {
     text-decoration: underline;
   }
+  #toc-nav a.toc-active {
+    font-weight: bold;
+    color: #032f62;
+  }
+  /* 画面幅が狭い場合は非表示 */
+  @media (max-width: 1200px) {
+    .toc-sidebar {
+      display: none;
+    }
+  }
 </style>
 
 <script>
 (function() {
   var article = document.querySelector('.post-content');
   var headings = article.querySelectorAll('h2, h3, h4');
+  var sidebar = document.getElementById('toc-sidebar');
   if (headings.length < 2) {
-    var toc = document.querySelector('.toc');
-    if (toc) toc.style.display = 'none';
+    if (sidebar) sidebar.style.display = 'none';
     return;
   }
   var nav = document.getElementById('toc-nav');
@@ -111,6 +136,26 @@ layout: default
     stack[stack.length - 1].list.appendChild(li);
   });
   nav.appendChild(ul);
+
+  // 現在の見出しをハイライト
+  var tocLinks = nav.querySelectorAll('a');
+  function updateActive() {
+    var scrollPos = window.scrollY + 100;
+    var active = null;
+    headings.forEach(function(h) {
+      if (h.offsetTop <= scrollPos) active = h;
+    });
+    tocLinks.forEach(function(a) { a.classList.remove('toc-active'); });
+    if (active) {
+      tocLinks.forEach(function(a) {
+        if (a.getAttribute('href') === '#' + active.id) {
+          a.classList.add('toc-active');
+        }
+      });
+    }
+  }
+  window.addEventListener('scroll', updateActive);
+  updateActive();
 })();
 </script>
 
