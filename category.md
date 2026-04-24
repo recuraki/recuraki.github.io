@@ -14,7 +14,8 @@ main_nav: true
     {% endif %}
   {% endfor %}
   <ul class="posts-list">
-  {% for post in site.categories[cat] %}
+  {% assign sorted_posts = site.categories[cat] | sort: "title" %}
+  {% for post in sorted_posts %}
     <li>
       <strong>
         <a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
