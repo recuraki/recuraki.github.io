@@ -296,13 +296,17 @@ gmailへのSSLトンネル確立
  ln -sf stunnel.pem `openssl x509 -noout -hash < stunnel.pem`.0
 ```
 
- debug用コマンド: smtp.gmail.comにアクセスできるかは以下のコマンドで確認
+```
+debug用コマンド: smtp.gmail.comにアクセスできるかは以下のコマンドで確認
+```
 
 ```
  openssl s_client -host smtp.gmail.com -port 465
 ```
 
- sudo vi /etc/stunnel/stunnel.conf
+```
+sudo vi /etc/stunnel/stunnel.conf
+```
 ```
  ; clientを書き換える
  client = yes

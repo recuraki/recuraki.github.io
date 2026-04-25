@@ -187,7 +187,6 @@ OR演算でいくつかのオプションを付けることができるのだけ
 ```
 みたいに、同じobjを2回archiveしたらどうなるんだろうと気になった。
 
-::
 ```
     nm lib.a
     lib.o:
@@ -267,32 +266,29 @@ RTLD_NEXTを用いて元の処理に戻してみましょう。
 ### コード
 
 *write_hook.c*
-```
-.. code-block:: c
-   :linenos:
+```c
+#include <stdio.h>
+#include <dlfcn.h>
 
-  #include <stdio.h>
-  #include <dlfcn.h>
+ssize_t write(int d, const void *buf, size_t nbytes)
+{
+  void *dl_handle;
+  int  (*o_write) (int d, const void *buf, size_t nbytes);
 
-  ssize_t write(int d, const void *buf, size_t nbytes)
-  {
-    void *dl_handle;
-    int  (*o_write) (int d, const void *buf, size_t nbytes);
+  o_write = dlsym(RTLD_NEXT, "write");
 
-    o_write = dlsym(RTLD_NEXT, "write");
+  printf("write was called.\n");
 
-    printf("write was called.\n");
-
-    return(o_write(d, buf, nbytes));
-  }
+  return(o_write(d, buf, nbytes));
+}
 ```
 
 ### 実行
 ```
-    $ gcc -shared  -o write_hook.so write_hook.c
-    $ LD_PRELOAD=./write_hook.so ./a.out
-    write was called.
-    hoge
+$ gcc -shared  -o write_hook.so write_hook.c
+$ LD_PRELOAD=./write_hook.so ./a.out
+write was called.
+hoge
 ```
 
 dlsym(RTLD_NEXT, <symbol>);

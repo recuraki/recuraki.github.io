@@ -66,7 +66,9 @@ atomのPC。省電力。小さい。SSDに換装してある。
 
 *必要なpkgのインストール*
 
- aptitude install vlan
+```
+aptitude install vlan
+```
 
 次に、interfacesにvlan I/Fの情報を書き、
 networkingをrestartする。
@@ -121,7 +123,9 @@ debianではovsのpkgは存在しない。
 sidでは存在するが、ここでは、ソースからコンパイルした。
 
 
- wheezyにあげます
+```
+wheezyにあげます
+```
 ```
  sudo aptitude update
  sudo aptitude full-upgrade
@@ -188,7 +192,9 @@ sidでは存在するが、ここでは、ソースからコンパイルした�
  sudo ovs-vsctl add-port br0 eth2.220
 ```
 
- これで、bridgeにI/Fを追加できました！
+```
+これで、bridgeにI/Fを追加できました！
+```
 
 ### ovsの初期設定(ここまでふるい)(旧設定)
 

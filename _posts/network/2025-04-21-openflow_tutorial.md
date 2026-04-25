@@ -8,8 +8,6 @@ cover:  "/assets/instacode.png"
 ---
 
 # OpenFlow チュートリアル on OSX
-Contents:
-
 
 
 TODO:
@@ -67,8 +65,10 @@ VMから抜けるときは、左のコマンドボタンを押します。
 まずは、
 
 
- dhclient eth1
- ifconfig eth1
+```
+dhclient eth1
+ifconfig eth1
+```
 
 を入力します。
 eth1は先ほど作成したホストオンリーネットワークです。
@@ -78,7 +78,9 @@ eth1は先ほど作成したホストオンリーネットワークです。
 OSXから、
 
 
- LC_ALL=C ssh -X mininet@192.168.56.101     
+```
+LC_ALL=C ssh -X mininet@192.168.56.101     
+```
 
 と実行し、"mininet"でログインします。
 このVMは、macをNAPTとして外部疎通性を持ちます。
@@ -115,7 +117,9 @@ xterm &
 まず、SSHした画面(xtermではありません！)から、
 
 
- sudo mn --topo single,3 --mac --switch ovsk --controller remote
+```
+sudo mn --topo single,3 --mac --switch ovsk --controller remote
+```
 
 と入力します。
 これで、チュートリアルにあるトポロジが作成されました。
@@ -126,19 +130,25 @@ mininetの実行中は仮想的にこれらのホストを生成しています�
 (興味のある人はmininet実行中にsshでホストに入り、ifconfigしてみてください)
 
 
- h1 <cmd>
- h1 ifconfig
- h1 ifconfig | grep inet 
+```
+h1 <cmd>
+h1 ifconfig
+h1 ifconfig | grep inet 
+```
 
 でh1のノード上でifconfigを実行できます。"|"についても、このノード上で実行されます。
 
 
- xterm h1 h2
+```
+xterm h1 h2
+```
 
 と入力することで、仮想的なノードh1,h2のコンソールが出せます。h1のウィンドウで
 
 
- ping 10.0.0.2
+```
+ping 10.0.0.2
+```
 
 とすればh2にpingが届く。。。ように思えますが、ここでは成功しません。
 なぜなら、まだ、OpenFlowスイッチには何らフローが入っておらず、
@@ -155,7 +165,9 @@ mininetはLinuxシステム上に仮想インタフェースを作り、
 このため「ごみ」が残った場合、
 
 
- sudo mn -c
+```
+sudo mn -c
+```
 
 とすることで、mininetの情報をクリアすることができます。
 
@@ -168,7 +180,9 @@ mininetはLinuxシステム上に仮想インタフェースを作り、
 OSXなら、ターミナルのウィンドウを増やし(Cmd+N)
 
 
- LC_ALL=C ssh mininet@192.168.56.101       
+```
+LC_ALL=C ssh mininet@192.168.56.101       
+```
 
 してください。(こちらではXはいらないので-Xオプションは不要です)
 
@@ -187,25 +201,29 @@ showコマンドは、OFスイッチのポート情報などを見ることが�
 showの後には以下のように入力します。
 
 
- $ dpctl show tcp:127.0.0.1:6634
- features_reply (xid=0xbfc1b5aa): ver:0x1, dpid:1
- n_tables:255, n_buffers:256
- features: capabilities:0xc7, actions:0xfff
-  1(s1-eth1): addr:12:7b:af:e3:8d:37, config: 0, state:0
-     current:    10GB-FD COPPER 
-  2(s1-eth2): addr:06:9b:e9:cf:c5:3b, config: 0, state:0
-     current:    10GB-FD COPPER 
-  3(s1-eth3): addr:1a:07:c4:d8:45:05, config: 0, state:0
-     current:    10GB-FD COPPER 
-  LOCAL(s1): addr:76:af:79:ae:b3:48, config: 0x1, state:0x1
- get_config_reply (xid=0x1538fa22): miss_send_len=0
+```
+$ dpctl show tcp:127.0.0.1:6634
+features_reply (xid=0xbfc1b5aa): ver:0x1, dpid:1
+n_tables:255, n_buffers:256
+features: capabilities:0xc7, actions:0xfff
+1(s1-eth1): addr:12:7b:af:e3:8d:37, config: 0, state:0
+ current:    10GB-FD COPPER 
+2(s1-eth2): addr:06:9b:e9:cf:c5:3b, config: 0, state:0
+ current:    10GB-FD COPPER 
+3(s1-eth3): addr:1a:07:c4:d8:45:05, config: 0, state:0
+ current:    10GB-FD COPPER 
+LOCAL(s1): addr:76:af:79:ae:b3:48, config: 0x1, state:0x1
+get_config_reply (xid=0x1538fa22): miss_send_len=0
+```
 
 これで、VM上で動作しているOpenvswitchの情報を取得できました。
 次に、この上に存在するフロー情報を取得してみましょう。
 
 
- mininet@mininet-vm:~$ dpctl dump-flows tcp:127.0.0.1:6634
- stats_reply (xid=0x897d2abf): flags=none type=1(flow)
+```
+mininet@mininet-vm:~$ dpctl dump-flows tcp:127.0.0.1:6634
+stats_reply (xid=0x897d2abf): flags=none type=1(flow)
+```
 
 おや？特に出力がありません。
 これは、現在、「OpenFlowに登録されているフローがない」からです。
@@ -214,11 +232,13 @@ showの後には以下のように入力します。
 mininetで以下のように入力します。
 
 
- mininet> h1 ping  -c3 h2
- PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.
- From 10.0.0.1 icmp_seq=1 Destination Host Unreachable
- From 10.0.0.1 icmp_seq=2 Destination Host Unreachable
- From 10.0.0.1 icmp_seq=3 Destination Host Unreachable
+```
+mininet> h1 ping  -c3 h2
+PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.
+From 10.0.0.1 icmp_seq=1 Destination Host Unreachable
+From 10.0.0.1 icmp_seq=2 Destination Host Unreachable
+From 10.0.0.1 icmp_seq=3 Destination Host Unreachable
+```
 
 先ほどと同じです。pingは帰ってきません。
 
@@ -231,8 +251,10 @@ ping h2としても、h2と入力してもh2の名前を解決できないのに
 その秘密は、mininetのshellにあります。
 
 
- mininet> h1 echo s1 - c0 - h1 - h2 
- 127.0.0.1 - 127.0.0.1 - 10.0.0.1 - 10.0.0.2
+```
+mininet> h1 echo s1 - c0 - h1 - h2 
+127.0.0.1 - 127.0.0.1 - 10.0.0.1 - 10.0.0.2
+```
 
 なるほど！mininetはh1 <cmd>を実行する際に、<cmd>に含まれる"nodes"の値を
 勝手に置換していたんですね！
@@ -240,23 +262,27 @@ ping h2としても、h2と入力してもh2の名前を解決できないのに
 では、ついに初めてのフローを定義しましょう！
 
 
- dpctl add-flow tcp:127.0.0.1:6634 in_port=1,actions=output:2
- dpctl add-flow tcp:127.0.0.1:6634 in_port=2,actions=output:1
- dpctl dump-flows tcp:127.0.0.1:6634
- stats_reply (xid=0x6493079): flags=none type=1(flow)
-  cookie=0, duration_sec=21s, duration_nsec=836000000s, table_id=0, priority=32768, n_packets=0, n_bytes=0, idle_timeout=60,hard_timeout=0,in_port=1,actions=output:2
-  cookie=0, duration_sec=21s, duration_nsec=199000000s, table_id=0, priority=32768, n_packets=0, n_bytes=0, idle_timeout=60,hard_timeout=0,in_port=2,actions=output:1
+```
+dpctl add-flow tcp:127.0.0.1:6634 in_port=1,actions=output:2
+dpctl add-flow tcp:127.0.0.1:6634 in_port=2,actions=output:1
+dpctl dump-flows tcp:127.0.0.1:6634
+stats_reply (xid=0x6493079): flags=none type=1(flow)
+cookie=0, duration_sec=21s, duration_nsec=836000000s, table_id=0, priority=32768, n_packets=0, n_bytes=0, idle_timeout=60,hard_timeout=0,in_port=1,actions=output:2
+cookie=0, duration_sec=21s, duration_nsec=199000000s, table_id=0, priority=32768, n_packets=0, n_bytes=0, idle_timeout=60,hard_timeout=0,in_port=2,actions=output:1
+```
 
 おや！先ほどはなにも表示されなｋった、dump-flowで出力が現れました！
 この後、「すぐに」＝60秒以内に mininetのウィンドウでさっきのコマンドを
 再試行します。
 
 
- mininet> h1 ping  -c3 h2
- PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.
- 64 bytes from 10.0.0.2: icmp_req=1 ttl=64 time=0.145 ms
- 64 bytes from 10.0.0.2: icmp_req=2 ttl=64 time=0.060 ms
- 64 bytes from 10.0.0.2: icmp_req=3 ttl=64 time=0.046 ms
+```
+mininet> h1 ping  -c3 h2
+PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.
+64 bytes from 10.0.0.2: icmp_req=1 ttl=64 time=0.145 ms
+64 bytes from 10.0.0.2: icmp_req=2 ttl=64 time=0.060 ms
+64 bytes from 10.0.0.2: icmp_req=3 ttl=64 time=0.046 ms
+```
 
 やった！pingが通りました！
 しかし、しばらくするとpingが通らなくなってしまいます。
@@ -267,7 +293,9 @@ ping h2としても、h2と入力してもh2の名前を解決できないのに
 これは、
 
 
- dpctl add-flow tcp:127.0.0.1:6634 in_port=1,idle_timeout=120,actions=output:2
+```
+dpctl add-flow tcp:127.0.0.1:6634 in_port=1,idle_timeout=120,actions=output:2
+```
 
 のようにすれば生存時間を延ばすことができます。
 
@@ -280,7 +308,9 @@ ping h2としても、h2と入力してもh2の名前を解決できないのに
 openflow用に開いているウィンドウでそのまま
 
 
- sudo wireshark &
+```
+sudo wireshark &
+```
 
 と入力します。(筆者の環境では、起動時に若干エラーが出ましたが、特に問題ありませんでした。)
 
@@ -294,7 +324,9 @@ openflow用に開いているウィンドウでそのまま
 次に、Wiresharkを起動したホスト上で、
 
 
- controller ptcp:
+```
+controller ptcp:
+```
 
 と入力してください。
 このコマンドは、ローカルホスト上で、「簡単なスイッチ」を扱うコントローラです。
@@ -305,11 +337,13 @@ pingを実行します。すると、応答が帰ってくると共に、
 wiresharkにいくつかのパケットが見えます。
 
 
- mininet> h1 ping  -c3 h2
- PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.
- 64 bytes from 10.0.0.2: icmp_req=1 ttl=64 time=2.08 ms
- 64 bytes from 10.0.0.2: icmp_req=2 ttl=64 time=0.248 ms
- 64 bytes from 10.0.0.2: icmp_req=3 ttl=64 time=0.046 ms
+```
+mininet> h1 ping  -c3 h2
+PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.
+64 bytes from 10.0.0.2: icmp_req=1 ttl=64 time=2.08 ms
+64 bytes from 10.0.0.2: icmp_req=2 ttl=64 time=0.248 ms
+64 bytes from 10.0.0.2: icmp_req=3 ttl=64 time=0.046 ms
+```
 
 OFP+ICMPとOFP+ARPのパケットが見えましたか？
 そうです。h1とh2の通信の一部がここに見えます。
@@ -326,13 +360,15 @@ pingを3回試行したのに、OFP+ICMPが2パケット＝一発分しか見え
 
 
 
- メモ:
- sudo mn --topo single,3 --mac --switch ovsk --controller remote
- mininet> iperf
- *** Iperf: testing TCP bandwidth between h1 and h3
- waiting for iperf to start up...*** Results: ['2.16 Gbits/sec', '2.16 Gbits/sec']
- sudo mn --topo single,3 --mac --controller remote --switch user
- の比較はうまくいかなかったんでパス。
+```
+メモ:
+sudo mn --topo single,3 --mac --switch ovsk --controller remote
+mininet> iperf
+*** Iperf: testing TCP bandwidth between h1 and h3
+waiting for iperf to start up...*** Results: ['2.16 Gbits/sec', '2.16 Gbits/sec']
+sudo mn --topo single,3 --mac --controller remote --switch user
+の比較はうまくいかなかったんでパス。
+```
 
 ## Controller Choice: POX (Python)
 ここまででOFスイッチを作成し、
@@ -382,11 +418,13 @@ pox/samples/of_tutorial.pyというファイルを読み込みます。
 mininetでh1,h2,h3のxtermを開き、それぞれのウィンドウで次の通り入力します。
 
 
- mininet> xterm h1 h2 h3
- # h2のウィンドウ
- tcpdump -XX -n -i h2-eth0
- # h3のウィンドウ
- tcpdump -XX -n -i h3-eth0
+```
+mininet> xterm h1 h2 h3
+# h2のウィンドウ
+tcpdump -XX -n -i h2-eth0
+# h3のウィンドウ
+tcpdump -XX -n -i h3-eth0
+```
 
 これらが実行できたら、h1のウィンドウで次のように入力してください。
 
@@ -409,15 +447,19 @@ h2,h3両方のウィンドウでicmpのメッセージが見えましたか？
 ではいったい、今、どのくらいのスループットが出るのでしょう？
 
 
- mininet> pingall
- mininet> iperf
- *** Iperf: testing TCP bandwidth between h1 and h3
- *** Results: ['5.46 Mbits/sec', '5.44 Mbits/sec']
+```
+mininet> pingall
+mininet> iperf
+*** Iperf: testing TCP bandwidth between h1 and h3
+*** Results: ['5.46 Mbits/sec', '5.44 Mbits/sec']
+```
 
 遅い！どうして？
 すべてのパケットがコントローラに上がってきているのです！
 TODO: ここ追加（フローがはいってるんじゃないよってこと)
 
 
- cp pox/samples/of_tutorial.py pox/samples/of_tutorial.py.orig
+```
+cp pox/samples/of_tutorial.py pox/samples/of_tutorial.py.orig
+```
 
