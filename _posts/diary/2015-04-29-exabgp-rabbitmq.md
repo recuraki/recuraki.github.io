@@ -71,11 +71,13 @@ exaBGPはneighborやneighbor group毎に１つあるいは複数の外部プロ�
 ![mq_1](/assets/img/source/diary/Src/mq_1.PNG)
 
 
- vSRX: 外部のルータ
- exaBGP: ルータとだけpeerを張っている
- proc.sh: exaBGPの外部プログラム
- rabbitMQ: exaBGPと同ホスト上で動くメッセージキューサーバ
- CLI: キューを読み書きする。ユーザとCLIでコミュニケーションする。
+```
+vSRX: 外部のルータ
+exaBGP: ルータとだけpeerを張っている
+proc.sh: exaBGPの外部プログラム
+rabbitMQ: exaBGPと同ホスト上で動くメッセージキューサーバ
+CLI: キューを読み書きする。ユーザとCLIでコミュニケーションする。
+```
 
 これによって、オペレータは好きなタイミングで経路情報を読み書きできる。
 

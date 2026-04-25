@@ -8,8 +8,6 @@ cover:  "/assets/instacode.png"
 ---
 
 # PowerShell
-Contents:
-
 
 
 ## ログの取得方法
